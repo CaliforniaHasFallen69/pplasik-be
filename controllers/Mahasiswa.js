@@ -50,7 +50,7 @@ export const createUserMhs = async (req, res) => {
     }
 
     const randomPassword = generateRandomPassword(12);
-    const hashedPassword = await argon2.hash(randomPassword);
+    const hashedPassword = await argon2.hash("12345");
 
     const user = await User.create({
       nama: nama,
