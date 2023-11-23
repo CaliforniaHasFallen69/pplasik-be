@@ -18,7 +18,7 @@ const Mahasiswa = db.define(
     },
 
     NIM: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       primaryKey: true,
@@ -134,7 +134,6 @@ const Mahasiswa = db.define(
         notEmpty: true,
       },
     },
-    
   },
   {
     freezeTableName: true,

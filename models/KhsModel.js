@@ -58,7 +58,7 @@ const Khs = db.define(
       },
     },
     NIM: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     
       allowNull: false,
       validate: {

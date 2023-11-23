@@ -26,7 +26,7 @@ const Pkl = db.define(
       },
     },
     NIM: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       unique: true,
       allowNull: false,
       validate: {
@@ -35,7 +35,7 @@ const Pkl = db.define(
     },
     status: {
       type: DataTypes.STRING,
-  
+
       allowNull: false,
       validate: {
         notEmpty: true,

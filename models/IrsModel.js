@@ -35,7 +35,7 @@ const Irs = db.define(
       },
     },
     NIM: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,

@@ -17,7 +17,7 @@ const Operator = db.define(
       },
     },
     NIP: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       primaryKey: true,
       unique: true,
       allowNull: false,
@@ -52,7 +52,7 @@ const Operator = db.define(
     },
 
     notelepon: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.STRING,
 
       allowNull: false,
       validate: {

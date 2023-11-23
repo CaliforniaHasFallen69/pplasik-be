@@ -34,7 +34,7 @@ const Skripsi = db.define(
       },
     },
     NIM: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       unique: true,
       allowNull: false,
       validate: {

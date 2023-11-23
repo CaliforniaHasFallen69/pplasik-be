@@ -18,7 +18,7 @@ const Dosenwali = db.define(
     },
 
     NIP: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       primaryKey: true,
