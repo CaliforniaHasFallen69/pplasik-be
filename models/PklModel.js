@@ -35,7 +35,7 @@ const Pkl = db.define(
     },
     status: {
       type: DataTypes.STRING,
-      unique: true,
+  
       allowNull: false,
       validate: {
         notEmpty: true,
