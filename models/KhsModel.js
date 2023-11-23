@@ -58,8 +58,8 @@ const Khs = db.define(
       },
     },
     NIM: {
-      type: DataTypes.INTEGER,
-      unique: true,
+      type: DataTypes.STRING,
+    
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -67,7 +67,7 @@ const Khs = db.define(
     },
     status: {
       type: DataTypes.STRING,
-      unique: true,
+
       allowNull: false,
       validate: {
         notEmpty: true,
