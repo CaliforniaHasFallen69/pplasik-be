@@ -1,4 +1,6 @@
 import Khs from "../models/KhsModel.js";
+import Mahasiswa from "../models/MahasiswaModel.js";
+
 
 export const getKhs = async (req, res) => {
   try {
@@ -23,17 +25,30 @@ export const getKhsById = async (req, res) => {
 };
 
 export const createKhs = async (req, res) => {
-  const { semester, sks, skskumulatif, ipsemester, ipkumulatif, NIM, status } = req.body;
+  const { semester, sks, skskumulatif, ipsemester, ipkumulatif } = req.body;
+  const user = req.user;
+
   try {
+    const mahasiswa = await Mahasiswa.findOne({
+      where: { email: user.email }, // Ubah menjadi kolom yang sesuai jika perlu
+    });
+    // Pastikan NIM tersedia dalam data pengguna yang login
+    if (!user || !mahasiswa) {
+      return res
+        .status(400)
+        .json({ msg: "Informasi NIM tidak tersedia untuk pengguna ini" });
+    }
+
     await Khs.create({
       semester: semester,
       sks: sks,
       skskumulatif: skskumulatif,
       ipsemester: ipsemester,
       ipkumulatif: ipkumulatif,
-      NIM: NIM,
+      NIM: mahasiswa.NIM, // Gunakan NIM dari informasi pengguna yang login
       status: "unapprove",
     });
+
     res.status(201).json({ msg: "Register Berhasil" });
   } catch (error) {
     res.status(400).json({ msg: error.message });

@@ -1,8 +1,10 @@
 import User from "../models/SkripsiModel.js";
+import Mahasiswa from "../models/MahasiswaModel.js";
+import skripsi from "../models/SkripsiModel.js";
 
 export const getSkripsi = async (req, res) => {
   try {
-    const response = await User.findAll();
+    const response = await skripsi.findAll();
     res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ msg: error.message });
@@ -11,7 +13,7 @@ export const getSkripsi = async (req, res) => {
 
 export const getSkripsiById = async (req, res) => {
   try {
-    const response = await User.findOne({
+    const response = await skripsi.findOne({
       where: {
         uuid: req.params.id,
       },
@@ -22,15 +24,28 @@ export const getSkripsiById = async (req, res) => {
   }
 };
 
-export const createUser = async (req, res) => {
-  const { semester, NIM, nilaiskripsi, status} = req.body;
+export const createSkripsi = async (req, res) => {
+  const { semester, nilaiskripsi } = req.body;
+  const user = req.user;
+
   try {
-    await User.create({
+    const mahasiswa = await Mahasiswa.findOne({
+      where: { email: user.email }, // Ubah menjadi kolom yang sesuai jika perlu
+    });
+    // Pastikan NIM tersedia dalam data pengguna yang login
+    if (!user || !mahasiswa) {
+      return res
+        .status(400)
+        .json({ msg: "Informasi NIM tidak tersedia untuk pengguna ini" });
+    }
+
+    await skripsi.create({
       semester: semester,
-      NIM: NIM,
-      nilaiskripsi: nilaiskripsi,
+      nilai: nilaiskripsi,
+      NIM: mahasiswa.NIM, // Gunakan NIM dari informasi pengguna yang login
       status: "unapprove",
     });
+
     res.status(201).json({ msg: "Register Berhasil" });
   } catch (error) {
     res.status(400).json({ msg: error.message });

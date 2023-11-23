@@ -1,4 +1,5 @@
 import Pkl from "../models/PklModel.js";
+import Mahasiswa from "../models/MahasiswaModel.js";
 
 export const getPkl = async (req, res) => {
   try {
@@ -23,14 +24,28 @@ export const getPklById = async (req, res) => {
 };
 
 export const createPkl = async (req, res) => {
-  const { semester, nilaipkl, NIM, status } = req.body;
+  const { semester, sks, nilaipkl} = req.body;
+  const user = req.user;
+
   try {
+    const mahasiswa = await Mahasiswa.findOne({
+      where: { email: user.email }, // Ubah menjadi kolom yang sesuai jika perlu
+    });
+    // Pastikan NIM tersedia dalam data pengguna yang login
+    if (!user || !mahasiswa) {
+      return res
+        .status(400)
+        .json({ msg: "Informasi NIM tidak tersedia untuk pengguna ini" });
+    }
+
     await Pkl.create({
       semester: semester,
+      sks: sks,
       nilaipkl: nilaipkl,
-      NIM: NIM,
+      NIM: mahasiswa.NIM, // Gunakan NIM dari informasi pengguna yang login
       status: "unapprove",
     });
+
     res.status(201).json({ msg: "Register Berhasil" });
   } catch (error) {
     res.status(400).json({ msg: error.message });

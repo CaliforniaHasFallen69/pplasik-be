@@ -1,4 +1,7 @@
 import irs from "../models/IrsModel.js";
+import User from "../models/UserModel.js";
+import Mahasiswa from "../models/MahasiswaModel.js";
+
 
 export const getIrs = async (req, res) => {
   try {
@@ -26,21 +29,55 @@ export const getIrsById = async (req, res) => {
 };
 
 export const createIrs = async (req, res) => {
-  const { semester, sks, NIM, status } =
-    req.body;
+  const { semester, sks, NIM, status } = req.body;
+  const user = req.user;
+  
   try {
+    const mahasiswa = await Mahasiswa.findOne({
+      where: { email: user.email }, // Ubah menjadi kolom yang sesuai jika perlu
+    });
+    // Pastikan NIM tersedia dalam data pengguna yang login
+    if (!user || !mahasiswa)  {
+      return res
+        .status(400)
+        .json({ msg: "Informasi NIM tidak tersedia untuk pengguna ini" });
+    }
+
     await irs.create({
       semester: semester,
       sks: sks,
-      NIM: NIM,
+      NIM: mahasiswa.NIM, // Gunakan NIM dari informasi pengguna yang login
       status: "unapprove",
     });
+
     res.status(201).json({ msg: "Register Berhasil" });
   } catch (error) {
     res.status(400).json({ msg: error.message });
   }
 };
 
+
+export const updateIrs = async (req, res) => {
+  const { id } = req.params;
+  const { semester, sks, NIM, status } =
+    req.body;
+  try {
+    const response = await irs.findOne({
+      where: {
+        uuid: id,
+      },
+    });
+    if (!response) {
+      return res.status(404).json({ msg: "Irs tidak ditemukan" });
+    }
+
+    response.status = status || response.status;
+    await response.save();
+    res.status(200).json({ msg: "Irs berhasil diperbarui", response });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+}
 // export const updateUser = async (req, res) => {
 //   const { id } = req.params; // Mendapatkan ID pengguna dari parameter URL
 //   const { name, email, role } = req.body; // Mendapatkan data yang akan diupdate dari body request
