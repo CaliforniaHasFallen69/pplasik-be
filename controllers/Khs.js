@@ -55,6 +55,26 @@ export const createKhs = async (req, res) => {
   }
 };
 
+export const updateKhs = async (req, res) => {
+  const { id } = req.params;
+  const { semester, sks, NIM, status } = req.body;
+  try {
+    const response = await Khs.findOne({
+      where: {
+        uuid: id,
+      },
+    });
+    if (!response) {
+      return res.status(404).json({ msg: "Khs tidak ditemukan" });
+    }
+
+    response.status = "approved";
+    await response.save();
+    res.status(200).json({ msg: "Khs berhasil diperbarui", response });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
 // export const updateUser = async (req, res) => {
 //   const { id } = req.params; // Mendapatkan ID pengguna dari parameter URL
 //   const { name, email, role } = req.body; // Mendapatkan data yang akan diupdate dari body request

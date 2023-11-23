@@ -71,7 +71,7 @@ export const updateIrs = async (req, res) => {
       return res.status(404).json({ msg: "Irs tidak ditemukan" });
     }
 
-    response.status = status || response.status;
+    response.status = "approved"
     await response.save();
     res.status(200).json({ msg: "Irs berhasil diperbarui", response });
   } catch (error) {

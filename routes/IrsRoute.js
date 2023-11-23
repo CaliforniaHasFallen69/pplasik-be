@@ -3,7 +3,7 @@ import {
   getIrs,
   getIrsById,
   createIrs,
-  //   updateUser,
+    updateIrs,
   //   deleteUser,
 } from "../controllers/Irs.js";
 import { getMahasiswa } from "../controllers/Mahasiswa.js";
@@ -14,6 +14,6 @@ const router = express.Router();
 router.get("/irs",isAuthenticated, isMahasiswa, getIrs);
 router.get("/irs/:id", isAuthenticated, getIrsById);
 router.post("/irs", isAuthenticated, isMahasiswa, createIrs);
-// router.patch("/operator/:id", updateUser);
+router.put("/irs",isAuthenticated, updateIrs);
 // router.delete("/operator/:id", deleteUser);
 export default router;
