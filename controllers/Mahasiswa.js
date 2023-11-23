@@ -57,6 +57,7 @@ export const createUserMhs = async (req, res) => {
       email: email,
       password: hashedPassword,
       role: "mahasiswa",
+      islogin: 1,
     }).then(async (user) => {
       const mahasiswa = await Mahasiswa.create({
         NIM: NIM,
@@ -65,9 +66,7 @@ export const createUserMhs = async (req, res) => {
         angkatan: angkatan,
         status: "aktif",
         iddosen: iddosen,
-        islogin: 1
       });
-      
 
       return mahasiswa;
     });

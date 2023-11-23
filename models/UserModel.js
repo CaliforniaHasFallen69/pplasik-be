@@ -55,6 +55,13 @@ const Users = db.define(
         notEmpty: true,
       },
     },
+    islogin: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
   },
   {
     freezeTableName: true,

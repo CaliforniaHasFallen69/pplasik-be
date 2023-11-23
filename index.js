@@ -52,12 +52,12 @@ app.use(KhsRoute);
 
 // store.sync();
 
-// db.sync({
-//   force: true,
-//   alter: true,
-// }).then(() => {
-//   console.log('🔄 User Model synced');
-//  });
+db.sync({
+  force: true,
+  alter: true,
+}).then(() => {
+  console.log('🔄 User Model synced');
+ });
 
 
 app.listen(process.env.APP_PORT, () => {
