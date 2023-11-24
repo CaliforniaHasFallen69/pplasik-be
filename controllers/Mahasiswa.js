@@ -28,49 +28,35 @@ export const getMahasiswaById = async (req, res) => {
 };
 
 export const createUserMhs = async (req, res) => {
-  const {
-    NIM,
-    nama,
-    email,
-    angkatan,
-    status,
-    iddosen,
-    password,
-  } = req.body;
+  const { NIM, nama, email, angkatan, status, iddosen } = req.body;
+
   try {
-    function generateRandomPassword(length) {
-      const characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-      let password = "";
-      for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        password += characters[randomIndex];
-      }
-      return password;
-    }
+    // Set the default password
+    const defaultPassword = "password123";
 
-    const randomPassword = generateRandomPassword(12);
-    const hashedPassword = await argon2.hash("12345");
+    // Hash the default password using argon2
+    const hashedPassword = await argon2.hash(defaultPassword);
 
+    // Create a new User with the default password
     const user = await User.create({
       nama: nama,
       email: email,
       password: hashedPassword,
       role: "mahasiswa",
       islogin: 1,
-    }).then(async (user) => {
-      const mahasiswa = await Mahasiswa.create({
-        NIM: NIM,
-        nama: nama,
-        email: email,
-        angkatan: angkatan,
-        status: "aktif",
-        iddosen: iddosen,
-      });
-
-      return mahasiswa;
     });
-    res.status(201).json({ msg: "Register Berhasil", user, randomPassword });
+
+    // Create the corresponding Mahasiswa entry
+    const mahasiswa = await Mahasiswa.create({
+      NIM: NIM,
+      nama: nama,
+      email: email,
+      angkatan: angkatan,
+      status: "aktif",
+      iddosen: iddosen,
+    });
+
+    res.status(201).json({ msg: "Register Berhasil", user, defaultPassword });
   } catch (error) {
     res.status(400).json({ msg: error.message });
   }
@@ -85,18 +71,17 @@ export const updateMhs = async (req, res) => {
     provinsi,
     notelepon,
     jalurmasuk,
-    status
+    status,
   } = req.body; // Mendapatkan data yang akan diupdate dari body request
 
   try {
     // Dapatkan informasi pengguna dari token JWT yang sedang login
     const user = req.user; // Asumsikan informasi pengguna (ID pengguna, dll.) sudah tersedia di req.user setelah proses autentikasi
-    console.log(user,"jdasiod")
-    
+    console.log(user, "jdasiod");
 
     // Temukan data mahasiswa berdasarkan informasi pengguna dari token
     const mahasiswa = await Mahasiswa.findOne({ where: { nama: user.nama } }); // Ganti userId dengan nama kolom yang sesuai dengan ID pengguna di tabel Mahasiswa
-    console.log(mahasiswa)
+    console.log(mahasiswa);
     if (!mahasiswa) {
       return res.status(404).json({ msg: "Mahasiswa tidak ditemukan" });
     }
@@ -109,7 +94,6 @@ export const updateMhs = async (req, res) => {
     mahasiswa.provinsi = provinsi || mahasiswa.provinsi;
     mahasiswa.notelepon = notelepon || mahasiswa.notelepon;
     mahasiswa.jalurmasuk = jalurmasuk || mahasiswa.jalurmasuk;
-    
 
     // Simpan perubahan ke database
     await mahasiswa.save();
@@ -122,8 +106,6 @@ export const updateMhs = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
-
-
 
 // export const deleteUser = async (req, res) => {
 //   const { id } = req.params; // Mendapatkan ID pengguna dari parameter URL
