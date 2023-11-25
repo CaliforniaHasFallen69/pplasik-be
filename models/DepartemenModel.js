@@ -1,51 +1,38 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
-import Mahasiswa from "./MahasiswaModel.js";
+import Users from "./UserModel.js";
 
 const { DataTypes } = Sequelize;
 
-const Skripsi = db.define(
-  "skripsi",
+const Departemen = db.define(
+  "departemen",
   {
     id: {
       type: DataTypes.STRING,
       defaultValue: DataTypes.UUIDV4,
-      allowNull: true,
+      allowNull: false,
       primaryKey: true,
       validate: {
         notEmpty: true,
       },
     },
 
-    semester: {
-      type: DataTypes.INTEGER,
-
-      allowNull: true,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    nilaiskripsi: {
-      type: DataTypes.CHAR(1),
-
-      allowNull: true,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    NIM: {
+    nama: {
       type: DataTypes.STRING,
-      unique: true,
+
       allowNull: false,
       validate: {
         notEmpty: true,
+        len: [3, 100],
       },
     },
-    status: {
+
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
+        isEmail: true,
       },
     },
   },
@@ -55,6 +42,10 @@ const Skripsi = db.define(
   }
 );
 
-Mahasiswa.hasMany(Skripsi, { foreignKey: "NIM" });
-Skripsi.belongsTo(Mahasiswa, { foreignKey: "NIM" });
-export default Skripsi;
+Users.hasMany(Departemen, { foreignKey: "email" });
+Departemen.belongsTo(Users, {
+  foreignKey: "email", 
+  targetKey: "email",
+  });
+
+export default Departemen;

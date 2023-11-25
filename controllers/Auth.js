@@ -5,8 +5,6 @@ import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import Operator from "../models/OperatorModel.js";
 
-//hai
-
 export const Login = async (req, res) => {
   console.log(req.body.email);
   const user = await User.findOne({
@@ -22,6 +20,7 @@ export const Login = async (req, res) => {
   const nama = user.nama;
   const email = user.email;
   const role = user.role;
+  const islogin = user.islogin;
 
   const accessToken = jwt.sign(
     { userId, nama, email, role },
@@ -36,6 +35,7 @@ export const Login = async (req, res) => {
     nama: user.nama,
     email: user.email,
     role: user.role,
+    islogin: user.islogin,
     accessToken,
   });
 };
@@ -43,7 +43,7 @@ export const Login = async (req, res) => {
 export const Me = async (req, res) => {
   console.log(req.user.email);
   const user = await User.findOne({
-    attributes: ["id", "nama", "email", "role"],
+    attributes: ["id", "nama", "email", "role", "islogin"],
     where: {
       email: req.user.email,
     },

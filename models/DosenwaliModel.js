@@ -36,6 +36,15 @@ const Dosenwali = db.define(
       },
     },
 
+    iddosen: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
     alamat: {
       type: DataTypes.STRING,
 
@@ -56,7 +65,7 @@ const Dosenwali = db.define(
     },
 
     notelepon: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.STRING,
 
       allowNull: false,
       validate: {
@@ -88,7 +97,10 @@ const Dosenwali = db.define(
 );
 
 Users.hasMany(Dosenwali);
-Dosenwali.belongsTo(Users, { foreignKey: "email" });
+Dosenwali.belongsTo(Users, { 
+  foreignKey: "email",
+  targetKey: "email",
+});
 
 
 export default Dosenwali;

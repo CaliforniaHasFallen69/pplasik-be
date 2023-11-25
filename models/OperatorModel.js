@@ -84,6 +84,9 @@ const Operator = db.define(
 );
 
 Users.hasMany(Operator, { foreignKey: "email" });
-Operator.belongsTo(Users, { foreignKey: "email" });
+Operator.belongsTo(Users, {
+  foreignKey: "email", 
+  targetKey: "email",
+  });
 
 export default Operator;

@@ -37,7 +37,7 @@ const Mahasiswa = db.define(
     },
 
     angkatan: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
 
       allowNull: false,
       validate: {
@@ -111,7 +111,7 @@ const Mahasiswa = db.define(
     },
 
     notelepon: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.STRING,
 
       allowNull: true,
       validate: {

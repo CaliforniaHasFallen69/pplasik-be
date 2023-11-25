@@ -42,7 +42,7 @@ const Pkl = db.define(
       },
     },
     nilaipkl: {
-      type: DataTypes.STRING,
+      type: DataTypes.CHAR(1),
 
       allowNull: true,
       validate: {

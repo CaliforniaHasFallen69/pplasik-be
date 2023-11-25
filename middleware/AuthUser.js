@@ -94,3 +94,26 @@ export const isDosenwali = async (req, res, next) => {
     });
   }
 };
+
+export const isDepartemen = async (req, res, next) => {
+  console.log(req.user);
+  console.log(req.body);
+  try {
+    const user = await Users.findOne({
+      where: {
+        id: req.user.userId,
+      },
+    });
+
+    if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
+
+    if (user.role !== "departemen")
+      return res.status(403).json({ message: "Anda tidak memiliki akses" });
+
+    next();
+  } catch (error) {
+    return res.status(500).send({
+      message: "Unable to validate User role!",
+    });
+  }
+};

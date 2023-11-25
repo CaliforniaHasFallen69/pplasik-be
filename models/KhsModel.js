@@ -42,15 +42,16 @@ const Khs = db.define(
       },
     },
     ipsemester: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT(3,2),
 
       allowNull: true,
       validate: {
         notEmpty: true,
       },
     },
+    
     ipkumulatif: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT(3,2),
 
       allowNull: true,
       validate: {

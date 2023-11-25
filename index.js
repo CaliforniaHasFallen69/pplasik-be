@@ -15,6 +15,8 @@ import IrsRoute from "./routes/IrsRoute.js";
 import PklRoute from "./routes/PklRoute.js";
 import SkripsiRoute from "./routes/SkripsiRoute.js";
 import KhsRoute from "./routes/KhsRoute.js";
+import DepartemenRoute from "./routes/DepartemenRoute.js";
+
 dotenv.config();
 
 const app = express();
@@ -45,6 +47,7 @@ app.use(AuthRoute);
 app.use(OperatorRoute);
 app.use(MahasiswaRoute);
 app.use(DosenwaliRoute);
+app.use(DepartemenRoute);
 app.use(IrsRoute);
 app.use(PklRoute);
 app.use(SkripsiRoute);
