@@ -1,7 +1,7 @@
 import irs from "../models/IrsModel.js";
 import User from "../models/UserModel.js";
 import Mahasiswa from "../models/MahasiswaModel.js";
-
+import multer from "multer";
 
 export const getIrs = async (req, res) => {
   try {
@@ -28,39 +28,66 @@ export const getIrsById = async (req, res) => {
   }
 };
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/documents/irs");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
+
 export const createIrs = async (req, res) => {
   const { semester, sks, NIM, status } = req.body;
   const user = req.user;
-  
+
   try {
     const mahasiswa = await Mahasiswa.findOne({
-      where: { email: user.email }, // Ubah menjadi kolom yang sesuai jika perlu
+      where: { email: user.email },
     });
-    // Pastikan NIM tersedia dalam data pengguna yang login
-    if (!user || !mahasiswa)  {
+
+    if (!user || !mahasiswa) {
       return res
         .status(400)
         .json({ msg: "Informasi NIM tidak tersedia untuk pengguna ini" });
     }
 
-    await irs.create({
-      semester: semester,
-      sks: sks,
-      NIM: mahasiswa.NIM, // Gunakan NIM dari informasi pengguna yang login
-      status: "unapprove",
-    });
+    upload.single("file")(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(500).json({ msg: err.message });
+      } else if (err) {
+        return res.status(500).json({ msg: err.message });
+      }
 
-    res.status(201).json({ msg: "Register Berhasil" });
+      try {
+        if (!req.file) {
+          return res.status(400).json({ msg: "Tidak ada file yang di-upload" });
+        }
+
+        const fileName = req.file.filename;
+
+        await irs.create({
+          semester: semester,
+          sks: sks,
+          NIM: mahasiswa.NIM,
+          status: "unapprove",
+          file: fileName,
+        });
+
+        res.status(201).json({ msg: "Register Berhasil" });
+      } catch (error) {
+        res.status(400).json({ msg: error.message });
+      }
+    });
   } catch (error) {
     res.status(400).json({ msg: error.message });
   }
 };
 
-
 export const updateIrs = async (req, res) => {
   const { id } = req.params;
-  const { semester, sks, NIM, status } =
-    req.body;
+  const { semester, sks, NIM, status } = req.body;
   try {
     const response = await irs.findOne({
       where: {
@@ -71,13 +98,13 @@ export const updateIrs = async (req, res) => {
       return res.status(404).json({ msg: "Irs tidak ditemukan" });
     }
 
-    response.status = "approved"
+    response.status = "approved";
     await response.save();
     res.status(200).json({ msg: "Irs berhasil diperbarui", response });
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
-}
+};
 // export const updateUser = async (req, res) => {
 //   const { id } = req.params; // Mendapatkan ID pengguna dari parameter URL
 //   const { name, email, role } = req.body; // Mendapatkan data yang akan diupdate dari body request

@@ -3,6 +3,7 @@ import User from "../models/UserModel.js";
 import axios from "axios";
 import bcrypt from "bcryptjs";
 import argon2 from "argon2";
+import csv from "fast-csv";
 
 //dasddas
 export const getMahasiswa = async (req, res) => {
@@ -28,15 +29,7 @@ export const getMahasiswaById = async (req, res) => {
 };
 
 export const createUserMhs = async (req, res) => {
-  const {
-    NIM,
-    nama,
-    email,
-    angkatan,
-    status,
-    iddosen,
-    password,
-  } = req.body;
+  const { NIM, nama, email, angkatan, status, iddosen, password } = req.body;
   try {
     function generateRandomPassword(length) {
       const characters =
@@ -76,6 +69,49 @@ export const createUserMhs = async (req, res) => {
   }
 };
 
+export const createUserMhsCsv = async (req, res) => {
+  try {
+    if (!req.files || !req.file.path) {
+      res.status(500).json({ msg: "file not found" });
+    }
+
+    const fileRows = [];
+    csv
+      .parseFile(req.file.path, { headers: true })
+      .on("data", (data) => {
+        fileRows.push(data);
+      })
+      .on("end", async () => {
+        for (const row of fileRows) {
+          const { NIM, nama, email, angkatan, status, iddosen } = row;
+
+          const hashedPassword = await argon2.hash("12345");
+          const user = await User.create({
+            nama: nama,
+            email: email,
+            password: hashedPassword,
+            role: "mahasiswa",
+            islogin: 1,
+          }).then(async (user) => {
+            const mahasiswa = await Mahasiswa.create({
+              NIM: NIM,
+              nama: nama,
+              email: email,
+              angkatan: angkatan,
+              status: "aktif",
+              iddosen: iddosen,
+            });
+            return mahasiswa;
+          });
+          result.push(user);
+        }
+      });
+    res.status(201).json({ msg: "Register Berhasil", result });
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
+  }
+};
+
 export const updateMhs = async (req, res) => {
   const {
     tempatlahir,
@@ -85,18 +121,17 @@ export const updateMhs = async (req, res) => {
     provinsi,
     notelepon,
     jalurmasuk,
-    status
+    status,
   } = req.body; // Mendapatkan data yang akan diupdate dari body request
 
   try {
     // Dapatkan informasi pengguna dari token JWT yang sedang login
     const user = req.user; // Asumsikan informasi pengguna (ID pengguna, dll.) sudah tersedia di req.user setelah proses autentikasi
-    console.log(user,"jdasiod")
-    
+    console.log(user, "jdasiod");
 
     // Temukan data mahasiswa berdasarkan informasi pengguna dari token
     const mahasiswa = await Mahasiswa.findOne({ where: { nama: user.nama } }); // Ganti userId dengan nama kolom yang sesuai dengan ID pengguna di tabel Mahasiswa
-    console.log(mahasiswa)
+    console.log(mahasiswa);
     if (!mahasiswa) {
       return res.status(404).json({ msg: "Mahasiswa tidak ditemukan" });
     }
@@ -109,7 +144,6 @@ export const updateMhs = async (req, res) => {
     mahasiswa.provinsi = provinsi || mahasiswa.provinsi;
     mahasiswa.notelepon = notelepon || mahasiswa.notelepon;
     mahasiswa.jalurmasuk = jalurmasuk || mahasiswa.jalurmasuk;
-    
 
     // Simpan perubahan ke database
     await mahasiswa.save();
@@ -122,8 +156,6 @@ export const updateMhs = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
-
-
 
 // export const deleteUser = async (req, res) => {
 //   const { id } = req.params; // Mendapatkan ID pengguna dari parameter URL
