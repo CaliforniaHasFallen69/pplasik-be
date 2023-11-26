@@ -23,12 +23,13 @@ export const getUserById = async (req, res) => {
 };
 
 export const createDoswal = async (req, res) => {
-  const { NIP, nama, alamat, email, notelepon, tempatlahir, tanggallahir } =
+  const { NIP, nama, iddosen, alamat, email, notelepon, tempatlahir, tanggallahir } =
     req.body;
   try {
     await User.create({
       NIP: NIP,
       nama: nama,
+      iddosen: iddosen,
       alamat: alamat,
       email: email,
       notelepon: notelepon,
