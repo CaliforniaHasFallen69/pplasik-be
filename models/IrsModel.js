@@ -48,6 +48,13 @@ const Irs = db.define(
         notEmpty: true,
       },
     },
+    file: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    }
   },
   {
     freezeTableName: true,

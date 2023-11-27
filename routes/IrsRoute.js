@@ -3,8 +3,7 @@ import {
   getIrs,
   getIrsById,
   createIrs,
-    updateIrs,
-  //   deleteUser,
+  updateIrs,
 } from "../controllers/Irs.js";
 import { getMahasiswa } from "../controllers/Mahasiswa.js";
 import { isAuthenticated, isMahasiswa } from "../middleware/AuthUser.js";

@@ -2,7 +2,7 @@ import express from "express";
 import {
   getPkl,
   getPklById,
-  // createUser,
+  createPkl,
   //   updateUser,
   //   deleteUser,
 } from "../controllers/Pkl.js";
@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get("/pkl", isAuthenticated, isMahasiswa, getPkl, getMahasiswa);
 router.get("/pkl/:id", isMahasiswa, getPklById);
-// router.post("/mahasiswa", createUser);
+router.post("/pkl", isAuthenticated, isMahasiswa, createPkl);
 // router.patch("/operator/:id", updateUser);
 // router.delete("/operator/:id", deleteUser);
 export default router;
