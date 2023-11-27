@@ -33,9 +33,7 @@ export const createUserMhs = async (req, res) => {
     nama,
     email,
     angkatan,
-    status,
-    iddosen,
-    password,
+    iddosen
   } = req.body;
   try {
     function generateRandomPassword(length) {
@@ -84,8 +82,7 @@ export const updateMhs = async (req, res) => {
     alamat,
     provinsi,
     notelepon,
-    jalurmasuk,
-    status
+    jalurmasuk
   } = req.body; // Mendapatkan data yang akan diupdate dari body request
 
   try {

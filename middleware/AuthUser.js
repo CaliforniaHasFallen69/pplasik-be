@@ -37,7 +37,7 @@ export const isOperator = async (req, res, next) => {
 
     if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
 
-    if (user.role !== "admin")
+    if (user.role !== "operator")
       return res.status(403).json({ message: "Anda tidak memiliki akses" });
 
     next();
