@@ -4,6 +4,8 @@ import Mahasiswa from "../models/MahasiswaModel.js";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import Operator from "../models/OperatorModel.js";
+import Dosenwali from "../models/DosenwaliModel.js";
+import Departemen from "../models/DepartemenModel.js";
 
 export const Login = async (req, res) => {
   console.log(req.body.email);
@@ -48,15 +50,44 @@ export const Me = async (req, res) => {
       email: req.user.email,
     },
   });
-  const operator = await Operator.findOne({
-    where: {
-      email: req.user.email,
-    },
-  });
+  if (user.role === 'operator') {
+    const operator = await Operator.findOne({
+      where: {
+        email: req.user.email,
+      },
+    });
+    if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+    res.status(200).json({ ...user.dataValues, operator });
+  } else if (user.role === 'mahasiswa') {
+    const mahasiswa = await Mahasiswa.findOne({
+      where: {
+        email: req.user.email,
+      },
+    });
+    if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+    res.status(200).json({ ...user.dataValues, mahasiswa });
+  } else if(user.role === 'dosen wali') {
+    const dosenwali = await Dosenwali.findOne({
+      where: {
+        email: req.user.email,
+      },
+    });
+    if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+    res.status(200).json({ ...user.dataValues, dosenwali });
+  } else if (user.role === 'departemen'){
+    const departemen = await Departemen.findOne({
+      where: {
+        email: req.user.email,
+      },
+    });
+    if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+    res.status(200).json({ ...user.dataValues, departemen });
+  }
 
   if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
   res.status(200).json({ ...user.dataValues, operator });
 };
+
 
 export const logOut = (req, res) => {
   req.session.destroy((err) => {
